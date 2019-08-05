@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Narrative Visualisation using D3.js</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="./chart.js"></script>
+    <link href='./chart.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body onload="displayChart('CHE_US$');">
+
+    <header>
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Health Expenditure</a>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div>
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="CHE_US$" href="#" onclick="displayChart('CHE_US$');">Current
+                                Health Expenditure(CHE)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="GGHE-D_US$" href="#" onclick="displayChart('GGHE-D_US$');">Domestic
+                                general government health expenditure(GGHE-D)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="PVT-D_US$" href="#" onclick="displayChart('PVT-D_US$');">Domestic
+                                private health expenditure(PVT-D)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="EXT_US$" href="#" onclick="displayChart('EXT_US$');">External health
+                                expenditure(EXT)</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="OOP_US$" href="#" onclick="displayChart('OOP_US$');">Out-of-pocket
+                                expenditure(OOP)</a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="info">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
+                            <p class="card-text"></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tooltip">
+    </div>
+
+
+    <footer>
+
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+main {
+    margin: 2px 0 0 30px;
+}
+
+#info {
+    width: 925px;
+    padding: 2px 0 0 40px;
+}
+
+path {
+    stroke: #e2e2e2;
+    stroke-width: 0.9;
+    fill: none;
+}
+
+path.current, path.highlight.current {
+    stroke: #000;
+    stroke-width: 2;
+}
+
+line {
+    stroke: black;
+}
+
+text {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11px;
+}
+
+.axis {
+    stroke-width: 0.8;
+    stroke: #000;
+}
+
+.xTicks, .yTicks {
+    stroke-width: 0.6;
+    stroke: #000;
+}
+.xlabel, .ylabel {
+    font-weight: bold;
+    color: gray;
+}
+
+.card {
+    border: none !important;
+}
+
+.card-body {
+    min-height: 120px;
+    font-size: 12px;
+    padding-bottom: 0;
+    margin-bottom: -30px;
+}
+
+.nav-pills {
+    margin: 2px;
+    font-size: small;
+}
+
+.nav-link {
+    padding: 0.2rem 0.5rem;
+}
