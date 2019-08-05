@@ -6,17 +6,30 @@ const cardHeaders = {
 
 const cardTitleDefault = 'World';
 
+let selected_expenditure_data = null;
+
+async function updateExpenditure() {
+    const csv = getSelectedExpenditure();
+    await displayChart(csv);
+}
+
+function updateCountry() {
+    selectedCountry = document.getElementById("country").value;
+    const countries = d3.selectAll("path." + selectedCountry.replace(/\s/g, '_'));
+    countries.classed('highlight', true);
+}
+
 async function displayChart(csv) {
     // clear svg
     document.querySelector('#chart').innerHTML = '';
 
     // add active class to selected item
     updateNavItemClass(csv);
+    expenditureBy = document.getElementById("expenditureBy").value;
 
     // fetch data
-    csv = csv + ".csv";
+    csv = csv + '_' + expenditureBy + ".csv";
     const health_expenditure_data = await d3.csv(csv);
-
 
     // display chart
     const width = 925;
@@ -29,7 +42,7 @@ async function displayChart(csv) {
 
     let minExpenditure = 1;
     let maxExpenditure = 10000;
-    
+
     let worldExpenditureStartYear = 0;
     let worldExpenditureEndYear = 0;
 
@@ -65,25 +78,26 @@ async function displayChart(csv) {
         });
     });
 
-
-    if(minExpenditure < 1) {
+    if (minExpenditure < 1) {
         minExpenditure = 0.1;
     }
 
     const yScale = d3.scaleLog().base(10).domain([maxExpenditure, minExpenditure]).range([margin, height - margin]);
     const xScale = d3.scaleLinear().domain([startYear, endYear]).range([margin, width]);
- 
+
     const onmouseover = function (d, i) {
         const currClass = d3.select(this).attr("class");
         d3.select(this).attr("class", currClass + " current");
 
         const country = d3.select(this).attr("country");
-        document.querySelector('.card-title').innerText = `${country}`;
+        // document.querySelector('.card-title').innerText = `${country}`;
         const average = ((d[15].y - d[0].y) / d[0].y) * 100;
-        document.querySelector('.card-text').innerHTML = `
-        <p>The country <strong>${country}</strong> has expenditure of <strong>$${d[0].y}</strong> 
+        const avgText = `
+        <p><strong>${country}</strong> has expenditure of <strong>$${d[0].y}</strong> 
         in year <strong>${d[0].x}</strong> and <strong>$${d[15].y}</strong> in <strong>${d[15].x}</strong>
-        which implies ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage<p>`;
+        which implies ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage</p>`;
+        // document.querySelector('.card-text').innerHTML = avgText;
+        document.querySelector('#sub-details').innerHTML = avgText;
 
         const xVal = (d) => { return xScale(d.x); };
         const yVal = (d) => { return yScale(d.y); };
@@ -94,10 +108,14 @@ async function displayChart(csv) {
         });
         tooltipContent += `</ul>`;
 
+        const toolTipText = `
+        <p><strong>${country}</strong> has expenditure ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage over years</p>`;
+
         d3.select(".tooltip").transition().duration(100).style("opacity", .9)
-		d3.select(".tooltip")
-            .html(`<strong>Country <span>${country}</span></strong><br>${tooltipContent}`)
-			.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+        d3.select(".tooltip")
+            .html(toolTipText)
+            .style("top", (d3.event.pageY + 20) + "px").style("left", (d3.event.pageX + 10) + "px")
+            .style('display', 'block');
 
         const dots = chart.selectAll("circle.line")
             .data(d)
@@ -107,8 +125,13 @@ async function displayChart(csv) {
             .attr("cx", xVal)
             .attr("cy", yVal)
             .style("stroke", function (d) {
-                return "black";
+                return "aquamarine";
+            }).style("fill", function (d) {
+                return "white";
             });
+
+        document.querySelector('#sub-chart').innerHTML = '';
+        displaySubChart(d);
     };
 
     const onmouseout = function (d, i) {
@@ -116,12 +139,15 @@ async function displayChart(csv) {
         var prevClass = currClass.substring(0, currClass.length - 8);
         d3.select(this).attr("class", prevClass);
         const average = ((worldExpenditureEndYear - worldExpenditureStartYear) / worldExpenditureStartYear) * 100;
-        document.querySelector('.card-title').innerText = `World`;
-        document.querySelector('.card-text').innerHTML = `
-        <p><strong>World</strong> has expenditure of <strong>${worldExpenditureStartYear.toFixed(2)}</strong> 
-        in year <strong>2000</strong> and <strong>$${worldExpenditureEndYear.toFixed(2)}</strong> in <strong>2015</strong>
-        which implies ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage</p>`;
+        // document.querySelector('.card-title').innerText = `World`;
+        // document.querySelector('.card-text').innerHTML = `
+        // <p><strong>World</strong> has expenditure of <strong>${worldExpenditureStartYear.toFixed(2)}</strong> 
+        // in year <strong>2000</strong> and <strong>$${worldExpenditureEndYear.toFixed(2)}</strong> in <strong>2015</strong>
+        // which implies ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage</p>`;
         chart.selectAll("circle").remove();
+        d3.select(".tooltip").style('display', 'none');
+        document.querySelector('#sub-chart').innerHTML = '';
+        document.querySelector('#sub-details').innerHTML = '';
     };
 
     const chart = d3.select("#chart")
@@ -138,6 +164,7 @@ async function displayChart(csv) {
         chart.append("path")
             .data([expenditure_data[idx].pathData])
             .attr("country", expenditure_data[idx].country)
+            .attr("class", expenditure_data[idx].country.replace(/\s/g, '_'))
             .attr("d", line)
             .on("mouseover", onmouseover)
             .on("mouseout", onmouseout);
@@ -204,18 +231,18 @@ async function displayChart(csv) {
     chart.append("text")
         .attr("class", "ylabel")
         .attr("text-anchor", "start")
-        .attr("x", -60)
-        .attr("y", 45)
+        .attr("x", -120)
+        .attr("y", 20)
         .attr("transform", "rotate(-90)")
-        .text("US $");
+        .text("Dollers");
 
-    document.querySelector('.card-title').innerText = `World`;
     const average = ((worldExpenditureEndYear - worldExpenditureStartYear) / worldExpenditureStartYear) * 100;
     document.querySelector('.card-text').innerHTML = `
         <p><strong>World</strong> has expenditure of <strong>${worldExpenditureStartYear.toFixed(2)}</strong> 
         in year <strong>2000</strong> and <strong>$${worldExpenditureEndYear.toFixed(2)}</strong> in <strong>2015</strong>
         which implies ${average > 0 ? 'increase' : 'decrease'} of <strong>${average.toFixed(2)}</strong> percentage</p>`;
 
+    fillCountries(health_expenditure_data);
 }
 
 const updateNavItemClass = (id) => {
@@ -227,5 +254,73 @@ const updateNavItemClass = (id) => {
             link.classList.remove('active');
         }
     });
-
 }
+
+const getSelectedExpenditure = () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    let expenditure = 'CHE';
+    navLinks.forEach(link => {
+        if (link.classList.contains('active')) {
+            expenditure = link.id;
+        }
+    });
+    return expenditure;
+}
+
+
+const displaySubChart = (data) => {
+
+    data = data.sort(function (a, b) {
+        return a.y - b.y;
+    })
+
+    var margin = {
+        top: 10,
+        right: 15,
+        bottom: 10,
+        left: 40
+    };
+
+    var width = 200 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    var svg = d3.select("#sub-chart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // set the ranges
+    var y = d3.scaleBand()
+        .range([height, 0])
+        .padding(0.1);
+
+    var x = d3.scaleLinear()
+        .range([0, width]);
+
+    x.domain([0, d3.max(data, function (d) { return d.y; })])
+    y.domain(data.map(function (d) { return d.x; }));
+
+    // append the rectangles for the bar chart
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("width", function (d) { return x(d.y); })
+        .attr("y", function (d) { return y(d.x); })
+        .attr("height", y.bandwidth());
+
+    // add the y Axis
+    svg.append("g")
+        .call(d3.axisLeft(y));
+}
+
+const fillCountries = (data) => {
+    let options = `<option value="select">Select</option>`;
+    data.forEach((data) => {
+        options += `<option value="${data.Country.replace(/\s/g, '_')}">${data.Country}</option>`;
+    });
+    document.querySelector('#country').innerHTML = options;
+};

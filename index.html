@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,7 +12,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 
-<body onload="displayChart('CHE_US$');">
+<body onload="displayChart('CHE');">
 
     <header>
         <nav class="navbar navbar-dark bg-dark">
@@ -23,52 +22,62 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <div class="col-10">
                 <div>
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active" id="CHE_US$" href="#" onclick="displayChart('CHE_US$');">Current
+                            <a class="nav-link active" id="CHE" href="#" onclick="displayChart('CHE');">Current
                                 Health Expenditure(CHE)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="GGHE-D_US$" href="#" onclick="displayChart('GGHE-D_US$');">Domestic
+                            <a class="nav-link" id="GGHE-D" href="#" onclick="displayChart('GGHE-D');">Domestic
                                 general government health expenditure(GGHE-D)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="PVT-D_US$" href="#" onclick="displayChart('PVT-D_US$');">Domestic
+                            <a class="nav-link" id="PVT-D" href="#" onclick="displayChart('PVT-D');">Domestic
                                 private health expenditure(PVT-D)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="EXT_US$" href="#" onclick="displayChart('EXT_US$');">External health
+                            <a class="nav-link" id="EXT" href="#" onclick="displayChart('EXT');">External health
                                 expenditure(EXT)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="OOP_US$" href="#" onclick="displayChart('OOP_US$');">Out-of-pocket
+                            <a class="nav-link" id="OOP" href="#" onclick="displayChart('OOP');">Out-of-pocket
                                 expenditure(OOP)</a>
                         </li>
                     </ul>
                 </div>
                 <div id="info">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title"></h5>
-                            <p class="card-text"></p>
-                        </div>
-                    </div>
+                    <p class="card-text"></p>
+                </div>
+                <div>
+                    <span><strong>Display By : -</strong></span>
+                    <select id="expenditureBy" onchange="updateExpenditure()">
+                        <option value="US$">By US$</option>
+                        <option value="PPP">By PPP</option>
+                    </select>
+
+                    <select id="country" onchange="updateCountry()">
+                        <option value="select">Select</option>
+                    </select>
                 </div>
                 <div id="chart"></div>
+            </div>
+
+            <div class="col-2">
+                <div id="details">
+                    <p>Global Health Observatory has data about the medical expenditure it can be seen here by various
+                        scenes for e.g out of pocket expense, private expense etc.</p>
+                </div>
+                <div id="sub-details"></div>
+                <div id="sub-chart"></div>
             </div>
         </div>
     </div>
 
-
     <div class="tooltip">
     </div>
 
-
-    <footer>
-
-    </footer>
 </body>
 
 </html>

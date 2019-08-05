@@ -1,10 +1,10 @@
+
 main {
     margin: 2px 0 0 30px;
 }
 
 #info {
     width: 925px;
-    padding: 2px 0 0 40px;
 }
 
 path {
@@ -14,17 +14,8 @@ path {
 }
 
 path.current, path.highlight.current {
-    stroke: #000;
+    stroke: springgreen;
     stroke-width: 2;
-}
-
-line {
-    stroke: black;
-}
-
-text {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 11px;
 }
 
 .axis {
@@ -36,6 +27,7 @@ text {
     stroke-width: 0.6;
     stroke: #000;
 }
+
 .xlabel, .ylabel {
     font-weight: bold;
     color: gray;
@@ -49,7 +41,6 @@ text {
     min-height: 120px;
     font-size: 12px;
     padding-bottom: 0;
-    margin-bottom: -30px;
 }
 
 .nav-pills {
@@ -61,6 +52,21 @@ text {
     padding: 0.2rem 0.5rem;
 }
 
-li:hover {
-    background: #f66666;
+.tooltip {
+    background-color: aquamarine;
+    border-radius: 10px;
+    padding: 10px 10px 0 10px;
+}
+
+.bar {
+    fill: aquamarine;
+}
+
+#details {
+    padding: 10px auto;
+}
+
+.highlight {
+    stroke: yellow;
+    stroke-width: 8px;
 }
